@@ -1,0 +1,503 @@
+<!DOCTYPE html>
+<html lang="ar" dir="rtl">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>3D Creative Portfolio | المصممة</title>
+    <link href="https://fonts.googleapis.com/css2?family=Cairo:wght@300;400;700;900&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
+    
+    <style>
+        :root {
+            --primary: #00f2ff; /* لون نيون أزرق */
+            --secondary: #ff0055; /* لون نيون وردي */
+            --bg: #0a0a0a;
+            --glass: rgba(255, 255, 255, 0.05);
+            --border: rgba(255, 255, 255, 0.1);
+        }
+
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+            font-family: 'Cairo', sans-serif;
+            scroll-behavior: smooth;
+        }
+
+        body {
+            background-color: var(--bg);
+            color: #fff;
+            overflow-x: hidden;
+        }
+
+        /* الخلفية الـ 3D */
+        #canvas-container {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            z-index: -1;
+            opacity: 0.6;
+        }
+
+        /* الهيدر */
+        header {
+            position: fixed;
+            top: 0;
+            width: 100%;
+            padding: 20px 50px;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            z-index: 100;
+            backdrop-filter: blur(10px);
+            border-bottom: 1px solid var(--border);
+        }
+
+        .logo {
+            font-size: 1.5rem;
+            font-weight: 900;
+            letter-spacing: 2px;
+            color: var(--primary);
+            text-transform: uppercase;
+        }
+
+        nav ul {
+            display: flex;
+            list-style: none;
+            gap: 30px;
+        }
+
+        nav a {
+            color: #fff;
+            text-decoration: none;
+            font-weight: 700;
+            transition: 0.3s;
+        }
+
+        nav a:hover {
+            color: var(--primary);
+            text-shadow: 0 0 10px var(--primary);
+        }
+
+        /* الأزرار */
+        .btn {
+            padding: 10px 30px;
+            border: 1px solid var(--primary);
+            background: transparent;
+            color: var(--primary);
+            font-weight: bold;
+            cursor: pointer;
+            transition: 0.3s;
+            text-decoration: none;
+            display: inline-block;
+            border-radius: 5px;
+        }
+
+        .btn:hover {
+            background: var(--primary);
+            color: #000;
+            box-shadow: 0 0 20px var(--primary);
+        }
+
+        /* الأقسام العامة */
+        section {
+            min-height: 100vh;
+            padding: 100px 10%;
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+        }
+
+        h2 {
+            font-size: 3rem;
+            margin-bottom: 50px;
+            text-align: center;
+            position: relative;
+        }
+
+        h2::after {
+            content: '';
+            position: absolute;
+            bottom: -10px;
+            left: 50%;
+            transform: translateX(-50%);
+            width: 100px;
+            height: 3px;
+            background: linear-gradient(90deg, var(--secondary), var(--primary));
+        }
+
+        /* Hero Section */
+        .hero {
+            text-align: center;
+            perspective: 1000px;
+        }
+
+        .hero h1 {
+            font-size: 5rem;
+            line-height: 1.2;
+            margin-bottom: 20px;
+            background: linear-gradient(to right, #fff, var(--primary));
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            animation: float 3s ease-in-out infinite;
+        }
+
+        .hero p {
+            font-size: 1.5rem;
+            color: #ccc;
+            margin-bottom: 40px;
+        }
+
+        /* البطاقات ثلاثية الأبعاد (Services & Store) */
+        .cards-container {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+            gap: 30px;
+        }
+
+        .card {
+            background: var(--glass);
+            border: 1px solid var(--border);
+            padding: 40px;
+            border-radius: 20px;
+            text-align: center;
+            transform-style: preserve-3d;
+            transform: perspective(1000px);
+            transition: transform 0.3s;
+            position: relative;
+            overflow: hidden;
+        }
+
+        .card i {
+            font-size: 3rem;
+            color: var(--secondary);
+            margin-bottom: 20px;
+            transform: translateZ(20px); /* يبرز للأمام */
+        }
+
+        .card h3 {
+            font-size: 1.5rem;
+            margin-bottom: 15px;
+            transform: translateZ(30px);
+        }
+
+        .card p {
+            color: #aaa;
+            transform: translateZ(20px);
+        }
+
+        /* المعرض (Portfolio) */
+        .gallery-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+            gap: 20px;
+        }
+
+        .gallery-item {
+            height: 300px;
+            background: #222;
+            border-radius: 15px;
+            position: relative;
+            overflow: hidden;
+            cursor: pointer;
+        }
+
+        .gallery-item img {
+            width: 100%;
+            height: 100%;
+            object-fit: cover;
+            transition: 0.5s;
+        }
+
+        .gallery-item:hover img {
+            transform: scale(1.1) rotate(2deg);
+        }
+
+        .overlay {
+            position: absolute;
+            bottom: -100%;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: linear-gradient(to top, rgba(0,0,0,0.9), transparent);
+            display: flex;
+            align-items: flex-end;
+            padding: 20px;
+            transition: 0.3s;
+        }
+
+        .gallery-item:hover .overlay {
+            bottom: 0;
+        }
+
+        /* الحجز (Booking) */
+        .booking-container {
+            display: flex;
+            gap: 50px;
+            flex-wrap: wrap;
+        }
+
+        .time-slots {
+            flex: 1;
+            background: var(--glass);
+            padding: 30px;
+            border-radius: 20px;
+        }
+
+        .slot {
+            display: flex;
+            justify-content: space-between;
+            padding: 15px;
+            border-bottom: 1px solid var(--border);
+            align-items: center;
+        }
+
+        .status {
+            width: 10px;
+            height: 10px;
+            border-radius: 50%;
+            background: #0f0;
+            box-shadow: 0 0 10px #0f0;
+        }
+        
+        .status.busy {
+            background: #f00;
+            box-shadow: 0 0 10px #f00;
+        }
+
+        @keyframes float {
+            0%, 100% { transform: translateY(0); }
+            50% { transform: translateY(-20px); }
+        }
+
+        /* CV Button Floating */
+        .cv-float {
+            position: fixed;
+            bottom: 30px;
+            right: 30px;
+            z-index: 999;
+            background: var(--primary);
+            color: #000;
+            width: 60px;
+            height: 60px;
+            border-radius: 50%;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            font-weight: bold;
+            box-shadow: 0 0 20px var(--primary);
+            text-decoration: none;
+            animation: pulse 2s infinite;
+        }
+
+        @keyframes pulse {
+            0% { transform: scale(1); }
+            50% { transform: scale(1.1); }
+            100% { transform: scale(1); }
+        }
+
+    </style>
+</head>
+<body>
+
+    <div id="canvas-container"></div>
+
+    <a href="#" class="cv-float">CV</a>
+
+    <header>
+        <div class="logo">DESIGNER.</div>
+        <nav>
+            <ul>
+                <li><a href="#home">الرئيسية</a></li>
+                <li><a href="#services">الخدمات</a></li>
+                <li><a href="#portfolio">المعرض</a></li>
+                <li><a href="#store">المتجر</a></li>
+                <li><a href="#contact">حجز</a></li>
+            </ul>
+        </nav>
+    </header>
+
+    <section id="home" class="hero">
+        <h1>إبداعك، بأبعاد جديدة<br><span style="color: var(--primary); font-size: 3rem;">Graphic & 3D Designer</span></h1>
+        <p>أحول الأفكار إلى واقع بصري ملموس بتصاميم احترافية</p>
+        <a href="#portfolio" class="btn">شاهد أعمالي</a>
+    </section>
+
+    <section id="services">
+        <h2>خدماتي</h2>
+        <div class="cards-container">
+            <div class="card" data-tilt data-tilt-glare data-tilt-max-glare="0.8">
+                <i class="fas fa-paint-brush"></i>
+                <h3>هوية بصرية</h3>
+                <p>تصميم شعارات وهويات كاملة تعكس قوة علامتك التجارية.</p>
+            </div>
+            <div class="card" data-tilt data-tilt-glare data-tilt-max-glare="0.8">
+                <i class="fas fa-cube"></i>
+                <h3>تصميم 3D</h3>
+                <p>نماذج ثلاثية الأبعاد للمنتجات والمشاريع المعمارية.</p>
+            </div>
+            <div class="card" data-tilt data-tilt-glare data-tilt-max-glare="0.8">
+                <i class="fas fa-video"></i>
+                <h3>موشن جرافيك</h3>
+                <p>تحريك الشعارات والإعلانات لزيادة التفاعل.</p>
+            </div>
+        </div>
+    </section>
+
+    <section id="portfolio">
+        <h2>أحدث الأعمال</h2>
+        <div class="gallery-grid">
+            <div class="gallery-item">
+                <img src="https://source.unsplash.com/random/800x600/?abstract,design" alt="Project 1">
+                <div class="overlay">
+                    <h3>مشروع هوية شركة تقنية</h3>
+                </div>
+            </div>
+            <div class="gallery-item">
+                <img src="https://source.unsplash.com/random/800x600/?3d,render" alt="Project 2">
+                <div class="overlay">
+                    <h3>تصميم منتج 3D</h3>
+                </div>
+            </div>
+            <div class="gallery-item">
+                <img src="https://source.unsplash.com/random/800x600/?neon,art" alt="Project 3">
+                <div class="overlay">
+                    <h3>بوستر إعلاني</h3>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <section id="store">
+        <h2>المتجر الرقمي</h2>
+        <div class="cards-container">
+            <div class="card" data-tilt style="border-color: var(--primary);">
+                <i class="fas fa-box-open" style="color: var(--primary);"></i>
+                <h3>حزمة موك-آب شاملة</h3>
+                <p>أكثر من 50 ملف مفتوح المصدر</p>
+                <h4 style="margin: 15px 0; font-size: 1.5rem;">$29.99</h4>
+                <a href="#" class="btn">شراء الآن</a>
+            </div>
+            <div class="card" data-tilt style="border-color: var(--primary);">
+                <i class="fas fa-icons" style="color: var(--primary);"></i>
+                <h3>أيقونات 3D</h3>
+                <p>مجموعة أيقونات للمواقع والتطبيقات</p>
+                <h4 style="margin: 15px 0; font-size: 1.5rem;">$15.00</h4>
+                <a href="#" class="btn">شراء الآن</a>
+            </div>
+        </div>
+    </section>
+
+    <section id="contact">
+        <h2>احجز استشارتك</h2>
+        <div class="booking-container">
+            <div class="card" style="flex:1;">
+                <h3>تواصل معي</h3>
+                <form style="display: flex; flex-direction: column; gap: 15px; margin-top: 20px;">
+                    <input type="text" placeholder="الاسم" style="padding: 10px; background: #222; border: 1px solid #444; color: #fff;">
+                    <input type="email" placeholder="البريد الإلكتروني" style="padding: 10px; background: #222; border: 1px solid #444; color: #fff;">
+                    <textarea rows="4" placeholder="تفاصيل المشروع" style="padding: 10px; background: #222; border: 1px solid #444; color: #fff;"></textarea>
+                    <button class="btn">إرسال الطلب</button>
+                </form>
+            </div>
+            <div class="time-slots">
+                <h3 style="margin-bottom: 20px;">حالة التوفر (بتوقيتك المحلي)</h3>
+                <div class="slot">
+                    <span>الأحد - 10:00 صباحاً</span>
+                    <span class="status"></span>
+                </div>
+                <div class="slot">
+                    <span>الاثنين - 02:00 مساءً</span>
+                    <span class="status busy"></span> </div>
+                <div class="slot">
+                    <span>الثلاثاء - 11:00 صباحاً</span>
+                    <span class="status"></span>
+                </div>
+                <div class="slot" style="margin-top: 20px; text-align: center; display: block; color: #aaa;">
+                    <i class="far fa-clock"></i> توقيت العمل: 9 ص - 5 م
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/three.js/r128/three.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/vanilla-tilt/1.7.0/vanilla-tilt.min.js"></script>
+
+    <script>
+        // تفعيل حركة البطاقات 3D
+        VanillaTilt.init(document.querySelectorAll(".card"), {
+            max: 15,
+            speed: 400,
+            glare: true,
+            "max-glare": 0.2,
+        });
+
+        // كود خلفية الـ Three.js البسيطة (مكعبات عائمة)
+        const scene = new THREE.Scene();
+        const camera = new THREE.PerspectiveCamera(75, window.innerWidth / window.innerHeight, 0.1, 1000);
+        const renderer = new THREE.WebGLRenderer({ alpha: true }); // خلفية شفافة
+        
+        renderer.setSize(window.innerWidth, window.innerHeight);
+        document.getElementById('canvas-container').appendChild(renderer.domElement);
+
+        // إنشاء شبكة من النقاط والخطوط (Wireframe Effect)
+        const geometry = new THREE.IcosahedronGeometry(10, 1);
+        const material = new THREE.MeshBasicMaterial({ 
+            color: 0x00f2ff, 
+            wireframe: true,
+            transparent: true,
+            opacity: 0.1
+        });
+        const sphere = new THREE.Mesh(geometry, material);
+        scene.add(sphere);
+
+        // إضافة جزيئات صغيرة عائمة
+        const particlesGeometry = new THREE.BufferGeometry();
+        const particlesCount = 700;
+        const posArray = new Float32Array(particlesCount * 3);
+
+        for(let i = 0; i < particlesCount * 3; i++) {
+            posArray[i] = (Math.random() - 0.5) * 50;
+        }
+
+        particlesGeometry.setAttribute('position', new THREE.BufferAttribute(posArray, 3));
+        const particlesMaterial = new THREE.PointsMaterial({
+            size: 0.05,
+            color: 0xff0055,
+            transparent: true,
+            opacity: 0.8
+        });
+        const particlesMesh = new THREE.Points(particlesGeometry, particlesMaterial);
+        scene.add(particlesMesh);
+
+        camera.position.z = 15;
+
+        // دالة الحركة (Animation Loop)
+        function animate() {
+            requestAnimationFrame(animate);
+
+            sphere.rotation.x += 0.001;
+            sphere.rotation.y += 0.001;
+
+            particlesMesh.rotation.y -= 0.002;
+            particlesMesh.rotation.x -= 0.001;
+
+            // تحريك الكاميرا قليلاً بناءً على الماوس
+            // يمكن تطويرها لتربط بحدث mousemove
+            
+            renderer.render(scene, camera);
+        }
+
+        animate();
+
+        // تعديل حجم الشاشة عند تغيير حجم المتصفح
+        window.addEventListener('resize', () => {
+            camera.aspect = window.innerWidth / window.innerHeight;
+            camera.updateProjectionMatrix();
+            renderer.setSize(window.innerWidth, window.innerHeight);
+        });
+    </script>
+</body>
+</html>
