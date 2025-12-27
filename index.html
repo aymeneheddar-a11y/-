@@ -3,34 +3,37 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>3D Creative Portfolio | المصممة</title>
-    <link href="https://fonts.googleapis.com/css2?family=Cairo:wght@300;400;700;900&display=swap" rel="stylesheet">
+    <title>Studio Portfolio | المصممة</title>
+    <link href="https://fonts.googleapis.com/css2?family=Tajawal:wght@300;500;700;900&display=swap" rel="stylesheet">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
     
     <style>
         :root {
-            --primary: #00f2ff; /* لون نيون أزرق */
-            --secondary: #ff0055; /* لون نيون وردي */
-            --bg: #0a0a0a;
-            --glass: rgba(255, 255, 255, 0.05);
-            --border: rgba(255, 255, 255, 0.1);
+            --bg-color: #f4f4f5; /* رمادي فاتح جداً */
+            --text-main: #18181b; /* ليس أسود كامل بل رمادي غامق */
+            --text-secondary: #52525b;
+            --accent: #6366f1; /* لون نيلي (Indigo) مميز */
+            --glass-card: rgba(255, 255, 255, 0.65);
+            --glass-border: rgba(255, 255, 255, 0.9);
+            --shadow: 0 10px 30px -10px rgba(0,0,0,0.08);
         }
 
         * {
             margin: 0;
             padding: 0;
             box-sizing: border-box;
-            font-family: 'Cairo', sans-serif;
+            font-family: 'Tajawal', sans-serif;
             scroll-behavior: smooth;
         }
 
         body {
-            background-color: var(--bg);
-            color: #fff;
+            background-color: var(--bg-color);
+            color: var(--text-main);
             overflow-x: hidden;
+            line-height: 1.6;
         }
 
-        /* الخلفية الـ 3D */
+        /* حاوية الـ 3D الخلفية */
         #canvas-container {
             position: fixed;
             top: 0;
@@ -38,264 +41,294 @@
             width: 100%;
             height: 100%;
             z-index: -1;
-            opacity: 0.6;
+            /* تدرج لوني خفيف جداً في الخلفية */
+            background: radial-gradient(circle at 50% 50%, #fff 0%, #e4e4e7 100%);
         }
 
-        /* الهيدر */
+        /* الهيدر المتجاوب */
         header {
             position: fixed;
             top: 0;
             width: 100%;
-            padding: 20px 50px;
+            padding: 1.5rem 5%;
             display: flex;
             justify-content: space-between;
             align-items: center;
             z-index: 100;
-            backdrop-filter: blur(10px);
-            border-bottom: 1px solid var(--border);
+            background: rgba(244, 244, 245, 0.8);
+            backdrop-filter: blur(12px);
+            border-bottom: 1px solid rgba(0,0,0,0.05);
         }
 
         .logo {
-            font-size: 1.5rem;
             font-weight: 900;
-            letter-spacing: 2px;
-            color: var(--primary);
-            text-transform: uppercase;
+            font-size: 1.5rem;
+            color: var(--text-main);
+            letter-spacing: -1px;
         }
+
+        .logo span { color: var(--accent); }
 
         nav ul {
             display: flex;
+            gap: 2rem;
             list-style: none;
-            gap: 30px;
         }
 
         nav a {
-            color: #fff;
             text-decoration: none;
-            font-weight: 700;
+            color: var(--text-secondary);
+            font-weight: 500;
             transition: 0.3s;
-        }
-
-        nav a:hover {
-            color: var(--primary);
-            text-shadow: 0 0 10px var(--primary);
-        }
-
-        /* الأزرار */
-        .btn {
-            padding: 10px 30px;
-            border: 1px solid var(--primary);
-            background: transparent;
-            color: var(--primary);
-            font-weight: bold;
-            cursor: pointer;
-            transition: 0.3s;
-            text-decoration: none;
-            display: inline-block;
-            border-radius: 5px;
-        }
-
-        .btn:hover {
-            background: var(--primary);
-            color: #000;
-            box-shadow: 0 0 20px var(--primary);
-        }
-
-        /* الأقسام العامة */
-        section {
-            min-height: 100vh;
-            padding: 100px 10%;
-            display: flex;
-            flex-direction: column;
-            justify-content: center;
-        }
-
-        h2 {
-            font-size: 3rem;
-            margin-bottom: 50px;
-            text-align: center;
             position: relative;
         }
 
-        h2::after {
+        nav a::after {
             content: '';
             position: absolute;
-            bottom: -10px;
+            width: 0;
+            height: 2px;
+            bottom: -5px;
+            left: 0;
+            background-color: var(--accent);
+            transition: 0.3s;
+        }
+
+        nav a:hover::after { width: 100%; }
+        nav a:hover { color: var(--accent); }
+
+        /* إخفاء القائمة في الموبايل وتبديلها بزر (تبسيط للكود) */
+        @media (max-width: 768px) {
+            nav ul { display: none; } /* يمكن إضافة قائمة منسدلة هنا */
+            .logo { font-size: 1.2rem; }
+        }
+
+        /* تنسيق الأقسام العام */
+        section {
+            padding: 80px 5%;
+            max-width: 1400px;
+            margin: 0 auto;
+        }
+
+        h2 {
+            font-size: 2.5rem;
+            margin-bottom: 3rem;
+            text-align: center;
+            color: var(--text-main);
+            position: relative;
+            display: inline-block;
             left: 50%;
             transform: translateX(-50%);
-            width: 100px;
-            height: 3px;
-            background: linear-gradient(90deg, var(--secondary), var(--primary));
         }
 
         /* Hero Section */
         .hero {
+            min-height: 100vh; /* ملء الشاشة */
+            display: flex;
+            align-items: center;
+            justify-content: center; /* توسيط المحتوى */
             text-align: center;
-            perspective: 1000px;
+            padding-top: 80px;
+        }
+
+        .hero-content {
+            z-index: 2;
+            max-width: 800px;
         }
 
         .hero h1 {
-            font-size: 5rem;
-            line-height: 1.2;
-            margin-bottom: 20px;
-            background: linear-gradient(to right, #fff, var(--primary));
+            font-size: clamp(2.5rem, 8vw, 5rem); /* خط يتغير حجمه بذكاء */
+            line-height: 1.1;
+            font-weight: 900;
+            margin-bottom: 1.5rem;
+            background: linear-gradient(135deg, var(--text-main) 0%, var(--accent) 100%);
             -webkit-background-clip: text;
             -webkit-text-fill-color: transparent;
-            animation: float 3s ease-in-out infinite;
         }
 
         .hero p {
-            font-size: 1.5rem;
-            color: #ccc;
-            margin-bottom: 40px;
+            font-size: clamp(1rem, 4vw, 1.25rem);
+            color: var(--text-secondary);
+            margin-bottom: 2.5rem;
+            max-width: 600px;
+            margin-left: auto;
+            margin-right: auto;
         }
 
-        /* البطاقات ثلاثية الأبعاد (Services & Store) */
-        .cards-container {
+        .btn-primary {
+            display: inline-block;
+            padding: 1rem 2.5rem;
+            background: var(--text-main);
+            color: #fff;
+            border-radius: 50px;
+            text-decoration: none;
+            font-weight: bold;
+            transition: transform 0.3s, box-shadow 0.3s;
+            box-shadow: 0 10px 20px rgba(0,0,0,0.1);
+        }
+
+        .btn-primary:hover {
+            transform: translateY(-3px);
+            box-shadow: 0 15px 30px rgba(0,0,0,0.15);
+            background: var(--accent);
+        }
+
+        /* نظام الشبكة (Grid System) للأيباد والكمبيوتر والهاتف */
+        .grid-container {
             display: grid;
+            /* هذا السطر السحري يجعلها متجاوبة تلقائياً */
             grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
-            gap: 30px;
+            gap: 2rem;
         }
 
+        /* الكروت (الخدمات والمتجر) */
         .card {
-            background: var(--glass);
-            border: 1px solid var(--border);
-            padding: 40px;
-            border-radius: 20px;
-            text-align: center;
-            transform-style: preserve-3d;
-            transform: perspective(1000px);
-            transition: transform 0.3s;
-            position: relative;
-            overflow: hidden;
+            background: var(--glass-card);
+            border: 1px solid var(--glass-border);
+            padding: 2.5rem;
+            border-radius: 24px;
+            backdrop-filter: blur(10px);
+            box-shadow: var(--shadow);
+            transition: transform 0.3s ease;
+            text-align: right;
         }
 
-        .card i {
-            font-size: 3rem;
-            color: var(--secondary);
-            margin-bottom: 20px;
-            transform: translateZ(20px); /* يبرز للأمام */
+        .card:hover {
+            transform: translateY(-10px);
+            background: rgba(255, 255, 255, 0.85);
         }
 
-        .card h3 {
+        .card-icon {
+            width: 60px;
+            height: 60px;
+            background: rgba(99, 102, 241, 0.1);
+            border-radius: 16px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
             font-size: 1.5rem;
-            margin-bottom: 15px;
-            transform: translateZ(30px);
+            color: var(--accent);
+            margin-bottom: 1.5rem;
         }
 
-        .card p {
-            color: #aaa;
-            transform: translateZ(20px);
-        }
+        .card h3 { margin-bottom: 1rem; font-size: 1.5rem; }
+        .card p { color: var(--text-secondary); font-size: 0.95rem; }
 
-        /* المعرض (Portfolio) */
-        .gallery-grid {
+        /* معرض الأعمال */
+        .portfolio-grid {
             display: grid;
-            grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
-            gap: 20px;
+            /* في الموبايل عمود واحد، في التابلت عمودين، في الكمبيوتر 3 */
+            grid-template-columns: repeat(auto-fill, minmax(350px, 1fr));
+            gap: 2rem;
         }
 
-        .gallery-item {
-            height: 300px;
-            background: #222;
-            border-radius: 15px;
+        .project-item {
             position: relative;
+            border-radius: 24px;
             overflow: hidden;
+            aspect-ratio: 4/3; /* يحافظ على نسبة الصورة */
+            box-shadow: var(--shadow);
             cursor: pointer;
         }
 
-        .gallery-item img {
+        .project-item img {
             width: 100%;
             height: 100%;
             object-fit: cover;
-            transition: 0.5s;
+            transition: transform 0.6s cubic-bezier(0.25, 0.46, 0.45, 0.94);
         }
 
-        .gallery-item:hover img {
-            transform: scale(1.1) rotate(2deg);
-        }
-
-        .overlay {
+        .project-info {
             position: absolute;
-            bottom: -100%;
-            left: 0;
-            width: 100%;
-            height: 100%;
-            background: linear-gradient(to top, rgba(0,0,0,0.9), transparent);
-            display: flex;
-            align-items: flex-end;
-            padding: 20px;
-            transition: 0.3s;
-        }
-
-        .gallery-item:hover .overlay {
             bottom: 0;
+            left: 0;
+            right: 0;
+            padding: 2rem;
+            background: linear-gradient(to top, rgba(0,0,0,0.8), transparent);
+            color: #fff;
+            transform: translateY(20px);
+            opacity: 0;
+            transition: 0.4s;
         }
 
-        /* الحجز (Booking) */
-        .booking-container {
+        .project-item:hover img { transform: scale(1.05); }
+        .project-item:hover .project-info { transform: translateY(0); opacity: 1; }
+
+        /* منطقة الحجز (Booking) */
+        .booking-section {
+            background: #fff;
+            border-radius: 30px;
+            padding: 3rem;
+            box-shadow: var(--shadow);
+            margin-bottom: 5rem;
             display: flex;
-            gap: 50px;
-            flex-wrap: wrap;
+            flex-wrap: wrap; /* ينزل تحت بعض في الموبايل */
+            gap: 3rem;
         }
 
-        .time-slots {
-            flex: 1;
-            background: var(--glass);
-            padding: 30px;
-            border-radius: 20px;
-        }
+        .booking-info, .booking-form { flex: 1; min-width: 300px; }
 
-        .slot {
-            display: flex;
-            justify-content: space-between;
-            padding: 15px;
-            border-bottom: 1px solid var(--border);
+        .availability-badge {
+            display: inline-flex;
             align-items: center;
+            gap: 10px;
+            padding: 8px 16px;
+            background: #ecfdf5;
+            color: #059669;
+            border-radius: 50px;
+            font-weight: bold;
+            margin-bottom: 2rem;
+            border: 1px solid #a7f3d0;
         }
 
-        .status {
-            width: 10px;
-            height: 10px;
-            border-radius: 50%;
-            background: #0f0;
-            box-shadow: 0 0 10px #0f0;
-        }
-        
-        .status.busy {
-            background: #f00;
-            box-shadow: 0 0 10px #f00;
+        .dot { width: 10px; height: 10px; background: #10b981; border-radius: 50%; animation: pulse 2s infinite; }
+
+        @keyframes pulse { 0% { opacity: 1; } 50% { opacity: 0.5; } 100% { opacity: 1; } }
+
+        input, textarea {
+            width: 100%;
+            padding: 1rem;
+            margin-bottom: 1rem;
+            border: 1px solid #e4e4e7;
+            border-radius: 12px;
+            background: #fafafa;
+            transition: 0.3s;
+            font-family: inherit;
         }
 
-        @keyframes float {
-            0%, 100% { transform: translateY(0); }
-            50% { transform: translateY(-20px); }
+        input:focus, textarea:focus {
+            outline: none;
+            border-color: var(--accent);
+            background: #fff;
+            box-shadow: 0 0 0 4px rgba(99, 102, 241, 0.1);
         }
 
-        /* CV Button Floating */
-        .cv-float {
+        /* زر التحميل العائم (CV) */
+        .floating-cv {
             position: fixed;
             bottom: 30px;
-            right: 30px;
-            z-index: 999;
-            background: var(--primary);
-            color: #000;
-            width: 60px;
-            height: 60px;
-            border-radius: 50%;
-            display: flex;
-            justify-content: center;
-            align-items: center;
-            font-weight: bold;
-            box-shadow: 0 0 20px var(--primary);
+            left: 30px; /* لليسار للغة العربية */
+            background: var(--text-main);
+            color: #fff;
+            padding: 15px 25px;
+            border-radius: 50px;
             text-decoration: none;
-            animation: pulse 2s infinite;
+            box-shadow: 0 10px 25px rgba(0,0,0,0.2);
+            z-index: 999;
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            font-weight: bold;
+            transition: 0.3s;
         }
+        
+        .floating-cv:hover { transform: scale(1.05); background: var(--accent); }
 
-        @keyframes pulse {
-            0% { transform: scale(1); }
-            50% { transform: scale(1.1); }
-            100% { transform: scale(1); }
+        /* تحسينات للشاشات الصغيرة جداً (Mobiles) */
+        @media (max-width: 480px) {
+            h2 { font-size: 1.8rem; }
+            section { padding: 60px 5%; }
+            .booking-section { padding: 1.5rem; }
         }
 
     </style>
@@ -304,120 +337,132 @@
 
     <div id="canvas-container"></div>
 
-    <a href="#" class="cv-float">CV</a>
+    <a href="#" class="floating-cv">
+        <i class="fas fa-download"></i> تحميل CV
+    </a>
 
     <header>
-        <div class="logo">DESIGNER.</div>
+        <div class="logo">DESIGN<span>STUDIO</span>.</div>
         <nav>
             <ul>
-                <li><a href="#home">الرئيسية</a></li>
                 <li><a href="#services">الخدمات</a></li>
                 <li><a href="#portfolio">المعرض</a></li>
                 <li><a href="#store">المتجر</a></li>
-                <li><a href="#contact">حجز</a></li>
+                <li><a href="#booking">حجز موعد</a></li>
             </ul>
         </nav>
     </header>
 
-    <section id="home" class="hero">
-        <h1>إبداعك، بأبعاد جديدة<br><span style="color: var(--primary); font-size: 3rem;">Graphic & 3D Designer</span></h1>
-        <p>أحول الأفكار إلى واقع بصري ملموس بتصاميم احترافية</p>
-        <a href="#portfolio" class="btn">شاهد أعمالي</a>
+    <section class="hero">
+        <div class="hero-content">
+            <h1>التصميم ليس مجرد شكل،<br>بل هو <span style="color: var(--accent);">تجربة.</span></h1>
+            <p>مصممة جرافيك متخصصة في خلق هويات بصرية ثلاثية الأبعاد وتجارب مستخدم لا تُنسى.</p>
+            <a href="#portfolio" class="btn-primary">استكشف أعمالي</a>
+        </div>
     </section>
 
     <section id="services">
-        <h2>خدماتي</h2>
-        <div class="cards-container">
-            <div class="card" data-tilt data-tilt-glare data-tilt-max-glare="0.8">
-                <i class="fas fa-paint-brush"></i>
-                <h3>هوية بصرية</h3>
-                <p>تصميم شعارات وهويات كاملة تعكس قوة علامتك التجارية.</p>
+        <h2>مجالات الإبداع</h2>
+        <div class="grid-container">
+            <div class="card" data-tilt>
+                <div class="card-icon"><i class="fas fa-pen-nib"></i></div>
+                <h3>Brand Identity</h3>
+                <p>صياغة هوية بصرية كاملة تنقل رسالة علامتك التجارية بوضوح وقوة.</p>
             </div>
-            <div class="card" data-tilt data-tilt-glare data-tilt-max-glare="0.8">
-                <i class="fas fa-cube"></i>
-                <h3>تصميم 3D</h3>
-                <p>نماذج ثلاثية الأبعاد للمنتجات والمشاريع المعمارية.</p>
+            <div class="card" data-tilt>
+                <div class="card-icon"><i class="fas fa-cube"></i></div>
+                <h3>3D Visualization</h3>
+                <p>تحويل المنتجات والأفكار إلى واقع ثلاثي الأبعاد مذهل للعروض التجارية.</p>
             </div>
-            <div class="card" data-tilt data-tilt-glare data-tilt-max-glare="0.8">
-                <i class="fas fa-video"></i>
-                <h3>موشن جرافيك</h3>
-                <p>تحريك الشعارات والإعلانات لزيادة التفاعل.</p>
+            <div class="card" data-tilt>
+                <div class="card-icon"><i class="fas fa-layer-group"></i></div>
+                <h3>UI/UX Design</h3>
+                <p>تصميم واجهات مواقع وتطبيقات تركز على جمالية الشكل وسهولة الاستخدام.</p>
             </div>
         </div>
     </section>
 
     <section id="portfolio">
-        <h2>أحدث الأعمال</h2>
-        <div class="gallery-grid">
-            <div class="gallery-item">
-                <img src="https://source.unsplash.com/random/800x600/?abstract,design" alt="Project 1">
-                <div class="overlay">
-                    <h3>مشروع هوية شركة تقنية</h3>
+        <h2>معرض الأعمال</h2>
+        <div class="portfolio-grid">
+            <div class="project-item">
+                <img src="https://images.unsplash.com/photo-1618005182384-a83a8bd57fbe?ixlib=rb-1.2.1&auto=format&fit=crop&w=800&q=80" alt="Project">
+                <div class="project-info">
+                    <h3>مشروع "ألفا" التقني</h3>
+                    <p>هوية بصرية كاملة + 3D</p>
                 </div>
             </div>
-            <div class="gallery-item">
-                <img src="https://source.unsplash.com/random/800x600/?3d,render" alt="Project 2">
-                <div class="overlay">
-                    <h3>تصميم منتج 3D</h3>
+            <div class="project-item">
+                <img src="https://images.unsplash.com/photo-1633356122544-f134324a6cee?ixlib=rb-1.2.1&auto=format&fit=crop&w=800&q=80" alt="Project">
+                <div class="project-info">
+                    <h3>تصميم تطبيق مالي</h3>
+                    <p>UI/UX Design</p>
                 </div>
             </div>
-            <div class="gallery-item">
-                <img src="https://source.unsplash.com/random/800x600/?neon,art" alt="Project 3">
-                <div class="overlay">
-                    <h3>بوستر إعلاني</h3>
+            <div class="project-item">
+                <img src="https://images.unsplash.com/photo-1558655146-d09347e92766?ixlib=rb-1.2.1&auto=format&fit=crop&w=800&q=80" alt="Project">
+                <div class="project-info">
+                    <h3>حملة إعلانية</h3>
+                    <p>Social Media & Art Direction</p>
                 </div>
             </div>
         </div>
     </section>
 
     <section id="store">
-        <h2>المتجر الرقمي</h2>
-        <div class="cards-container">
-            <div class="card" data-tilt style="border-color: var(--primary);">
-                <i class="fas fa-box-open" style="color: var(--primary);"></i>
-                <h3>حزمة موك-آب شاملة</h3>
-                <p>أكثر من 50 ملف مفتوح المصدر</p>
-                <h4 style="margin: 15px 0; font-size: 1.5rem;">$29.99</h4>
-                <a href="#" class="btn">شراء الآن</a>
+        <h2>متجر الأصول الرقمية</h2>
+        <div class="grid-container">
+            <div class="card" data-tilt>
+                <img src="https://via.placeholder.com/300x200/eee/ccc?text=Mockup+Pack" style="width:100%; border-radius:12px; margin-bottom:15px;" alt="Product">
+                <h3>حزمة موك-آب زجاجية</h3>
+                <p style="margin-bottom: 10px;">مثالية لعرض التطبيقات</p>
+                <div style="display:flex; justify-content:space-between; align-items:center;">
+                    <span style="font-weight:bold; font-size:1.2rem;">$25.00</span>
+                    <button style="padding:8px 20px; background:var(--text-main); color:#fff; border:none; border-radius:8px; cursor:pointer;">شراء</button>
+                </div>
             </div>
-            <div class="card" data-tilt style="border-color: var(--primary);">
-                <i class="fas fa-icons" style="color: var(--primary);"></i>
-                <h3>أيقونات 3D</h3>
-                <p>مجموعة أيقونات للمواقع والتطبيقات</p>
-                <h4 style="margin: 15px 0; font-size: 1.5rem;">$15.00</h4>
-                <a href="#" class="btn">شراء الآن</a>
+            <div class="card" data-tilt>
+                <img src="https://via.placeholder.com/300x200/eee/ccc?text=3D+Icons" style="width:100%; border-radius:12px; margin-bottom:15px;" alt="Product">
+                <h3>أيقونات 3D للمواقع</h3>
+                <p style="margin-bottom: 10px;">+100 أيقونة عالية الدقة</p>
+                <div style="display:flex; justify-content:space-between; align-items:center;">
+                    <span style="font-weight:bold; font-size:1.2rem;">$18.00</span>
+                    <button style="padding:8px 20px; background:var(--text-main); color:#fff; border:none; border-radius:8px; cursor:pointer;">شراء</button>
+                </div>
             </div>
         </div>
     </section>
 
-    <section id="contact">
-        <h2>احجز استشارتك</h2>
-        <div class="booking-container">
-            <div class="card" style="flex:1;">
-                <h3>تواصل معي</h3>
-                <form style="display: flex; flex-direction: column; gap: 15px; margin-top: 20px;">
-                    <input type="text" placeholder="الاسم" style="padding: 10px; background: #222; border: 1px solid #444; color: #fff;">
-                    <input type="email" placeholder="البريد الإلكتروني" style="padding: 10px; background: #222; border: 1px solid #444; color: #fff;">
-                    <textarea rows="4" placeholder="تفاصيل المشروع" style="padding: 10px; background: #222; border: 1px solid #444; color: #fff;"></textarea>
-                    <button class="btn">إرسال الطلب</button>
-                </form>
+    <section id="booking">
+        <div class="booking-section">
+            <div class="booking-info">
+                <h2>لنعمل سوياً</h2>
+                <div class="availability-badge">
+                    <div class="dot"></div>
+                    متاحة لاستقبال مشاريع جديدة
+                </div>
+                <p style="color: var(--text-secondary); margin-bottom: 2rem;">
+                    ساعات العمل: الأحد - الخميس<br>
+                    09:00 صباحاً - 05:00 مساءً
+                </p>
+                <div style="font-size: 1.1rem; font-weight: bold;">
+                    <i class="fas fa-envelope" style="color: var(--accent); margin-left: 10px;"></i>
+                    hello@designer-studio.com
+                </div>
             </div>
-            <div class="time-slots">
-                <h3 style="margin-bottom: 20px;">حالة التوفر (بتوقيتك المحلي)</h3>
-                <div class="slot">
-                    <span>الأحد - 10:00 صباحاً</span>
-                    <span class="status"></span>
-                </div>
-                <div class="slot">
-                    <span>الاثنين - 02:00 مساءً</span>
-                    <span class="status busy"></span> </div>
-                <div class="slot">
-                    <span>الثلاثاء - 11:00 صباحاً</span>
-                    <span class="status"></span>
-                </div>
-                <div class="slot" style="margin-top: 20px; text-align: center; display: block; color: #aaa;">
-                    <i class="far fa-clock"></i> توقيت العمل: 9 ص - 5 م
-                </div>
+            <div class="booking-form">
+                <form>
+                    <input type="text" placeholder="الاسم الكامل">
+                    <input type="email" placeholder="البريد الإلكتروني">
+                    <select style="width: 100%; padding: 1rem; margin-bottom: 1rem; border: 1px solid #e4e4e7; border-radius: 12px; background: #fafafa;">
+                        <option>نوع المشروع</option>
+                        <option>هوية بصرية</option>
+                        <option>تصميم موقع</option>
+                        <option>أخرى</option>
+                    </select>
+                    <textarea rows="4" placeholder="تفاصيل المشروع..."></textarea>
+                    <button class="btn-primary" style="width: 100%; border: none; cursor: pointer;">إرسال الطلب</button>
+                </form>
             </div>
         </div>
     </section>
@@ -426,73 +471,94 @@
     <script src="https://cdnjs.cloudflare.com/ajax/libs/vanilla-tilt/1.7.0/vanilla-tilt.min.js"></script>
 
     <script>
-        // تفعيل حركة البطاقات 3D
+        // تفعيل حركة الكروت
         VanillaTilt.init(document.querySelectorAll(".card"), {
-            max: 15,
+            max: 5, /* حركة خفيفة جداً لتبدو احترافية */
             speed: 400,
             glare: true,
             "max-glare": 0.2,
+            scale: 1.02
         });
 
-        // كود خلفية الـ Three.js البسيطة (مكعبات عائمة)
+        // 3D Background - Clean & Soft Style
         const scene = new THREE.Scene();
+        // لون الضباب لدمج العناصر مع الخلفية
+        scene.fog = new THREE.Fog(0xf4f4f5, 10, 50);
+
         const camera = new THREE.PerspectiveCamera(75, window.innerWidth / window.innerHeight, 0.1, 1000);
-        const renderer = new THREE.WebGLRenderer({ alpha: true }); // خلفية شفافة
+        const renderer = new THREE.WebGLRenderer({ alpha: true, antialias: true }); // Antialias مهم للنعومة
         
         renderer.setSize(window.innerWidth, window.innerHeight);
         document.getElementById('canvas-container').appendChild(renderer.domElement);
 
-        // إنشاء شبكة من النقاط والخطوط (Wireframe Effect)
-        const geometry = new THREE.IcosahedronGeometry(10, 1);
-        const material = new THREE.MeshBasicMaterial({ 
-            color: 0x00f2ff, 
-            wireframe: true,
-            transparent: true,
-            opacity: 0.1
+        // إضاءة ناعمة (Studio Lighting)
+        const ambientLight = new THREE.AmbientLight(0xffffff, 0.8);
+        scene.add(ambientLight);
+
+        const directionalLight = new THREE.DirectionalLight(0xffffff, 0.5);
+        directionalLight.position.set(10, 10, 10);
+        scene.add(directionalLight);
+
+        const directionalLight2 = new THREE.DirectionalLight(0x6366f1, 0.4); // ضوء أزرق خافت
+        directionalLight2.position.set(-10, -10, -5);
+        scene.add(directionalLight2);
+
+        // إضافة أشكال هندسية ناعمة (Torus & Spheres)
+        const shapes = [];
+
+        // خامة "مطاطية" أو "طينية" (Matte Material)
+        const material = new THREE.MeshStandardMaterial({ 
+            color: 0xffffff, 
+            roughness: 0.4,
+            metalness: 0.1,
         });
-        const sphere = new THREE.Mesh(geometry, material);
+
+        // الشكل 1
+        const geometry1 = new THREE.TorusGeometry(10, 3, 16, 100);
+        const torus = new THREE.Mesh(geometry1, material);
+        torus.position.set(15, 0, -20);
+        scene.add(torus);
+        shapes.push(torus);
+
+        // الشكل 2
+        const geometry2 = new THREE.SphereGeometry(6, 32, 32);
+        const sphere = new THREE.Mesh(geometry2, material);
+        sphere.position.set(-15, 8, -25);
         scene.add(sphere);
+        shapes.push(sphere);
 
-        // إضافة جزيئات صغيرة عائمة
-        const particlesGeometry = new THREE.BufferGeometry();
-        const particlesCount = 700;
-        const posArray = new Float32Array(particlesCount * 3);
+        // الشكل 3 (صغير)
+        const geometry3 = new THREE.IcosahedronGeometry(4, 0);
+        const ico = new THREE.Mesh(geometry3, material);
+        ico.position.set(-10, -10, -15);
+        scene.add(ico);
+        shapes.push(ico);
 
-        for(let i = 0; i < particlesCount * 3; i++) {
-            posArray[i] = (Math.random() - 0.5) * 50;
-        }
+        camera.position.z = 20;
 
-        particlesGeometry.setAttribute('position', new THREE.BufferAttribute(posArray, 3));
-        const particlesMaterial = new THREE.PointsMaterial({
-            size: 0.05,
-            color: 0xff0055,
-            transparent: true,
-            opacity: 0.8
-        });
-        const particlesMesh = new THREE.Points(particlesGeometry, particlesMaterial);
-        scene.add(particlesMesh);
-
-        camera.position.z = 15;
-
-        // دالة الحركة (Animation Loop)
+        // التحريك
         function animate() {
             requestAnimationFrame(animate);
 
-            sphere.rotation.x += 0.001;
-            sphere.rotation.y += 0.001;
+            // دوران بطيء وناعم
+            torus.rotation.x += 0.003;
+            torus.rotation.y += 0.002;
 
-            particlesMesh.rotation.y -= 0.002;
-            particlesMesh.rotation.x -= 0.001;
+            sphere.rotation.y -= 0.002;
+            sphere.position.y += Math.sin(Date.now() * 0.001) * 0.02; // حركة طفو
 
-            // تحريك الكاميرا قليلاً بناءً على الماوس
-            // يمكن تطويرها لتربط بحدث mousemove
+            ico.rotation.x -= 0.005;
+            ico.rotation.z -= 0.005;
+
+            // تحريك الكاميرا بناءً على الماوس (Parallax بسيط)
+            // camera.position.x += (mouseX - camera.position.x) * 0.05;
             
             renderer.render(scene, camera);
         }
 
         animate();
 
-        // تعديل حجم الشاشة عند تغيير حجم المتصفح
+        // التجاوب مع تغيير حجم الشاشة
         window.addEventListener('resize', () => {
             camera.aspect = window.innerWidth / window.innerHeight;
             camera.updateProjectionMatrix();
@@ -500,4 +566,5 @@
         });
     </script>
 </body>
-</html>
+            </html>
+    
